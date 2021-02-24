@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vadmin.mapper.sys.OperLogMapper">
+
+    <select id="queryById" parameterType="long" resultType="OperLog">
+        select * from sys_oper_log where operId = #{operId}
+    </select>
+
+    <select id="queryByList" parameterType="OperLog" resultType="OperLog">
+        select * from sys_oper_log
+        <where>
+            <if test="moduleName != null and moduleName != '' ">
+                and moduleName like CONCAT('%',#{moduleName},'%')
+            </if>
+            <if test="operateType != null and operateType != '' ">
+                and operateType like CONCAT('%',#{operateType},'%')
+            </if>
+            <if test="operName != null and operName != '' ">
+                and operName like CONCAT('%',#{operName},'%')
+            </if>
+            <if test="status != null and status != '' ">
+                and status = #{status}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                <if test="endTime != null and endTime != ''">
+                    and operTime between #{beginTime} and #{endTime}
+                </if>
+            </if>
+        </where>
+        order by operTime desc
+    </select>
+
+    <insert id="add" parameterType="OperLog">
+        insert into sys_oper_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="moduleName != null and moduleName != ''">moduleName,</if>
+            <if test="operateType != null and operateType != ''">operateType,</if>
+            <if test="method != null and method != ''">method,</if>
+            <if test="requestMethod != null and requestMethod != ''">requestMethod,</if>
+            <if test="operOs != null and operOs != ''">operOs,</if>
+            <if test="operName != null and operName != ''">operName,</if>
+            <if test="operUrl != null and operUrl != ''">operUrl,</if>
+            <if test="operIp != null and operIp != ''">operIp,</if>
+            <if test="operLocation != null and operLocation != ''">operLocation,</if>
+            <if test="operParam != null and operParam != ''">operParam,</if>
+            <if test="jsonResult != null and jsonResult != ''">jsonResult,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="errorMsg != null and errorMsg != ''">errorMsg,</if>
+            operTime,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="moduleName != null and moduleName != ''">#{moduleName},</if>
+            <if test="operateType != null and operateType != ''">#{operateType},</if>
+            <if test="method != null and method != ''">#{method},</if>
+            <if test="requestMethod != null and requestMethod != ''">#{requestMethod},</if>
+            <if test="operOs != null and operOs != ''">#{operOs},</if>
+            <if test="operName != null and operName != ''">#{operName},</if>
+            <if test="operUrl != null and operUrl != ''">#{operUrl},</if>
+            <if test="operIp != null and operIp != ''">#{operIp},</if>
+            <if test="operLocation != null and operLocation != ''">#{operLocation},</if>
+            <if test="operParam != null and operParam != ''">#{operParam},</if>
+            <if test="jsonResult != null and jsonResult != ''">#{jsonResult},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="errorMsg != null and errorMsg != ''">#{errorMsg},</if>
+            sysdate(),
+        </trim>
+    </insert>
+
+    <delete id="remove" parameterType="Long">
+        delete from sys_oper_log where operId in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

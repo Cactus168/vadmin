@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vadmin.mapper.sys.MenuMapper">
+
+    <select id="queryById" parameterType="long" resultType="Menu">
+        select * from sys_menu where menuId = #{menuId}
+    </select>
+
+    <select id="queryByList" parameterType="Menu" resultType="Menu">
+        select * from sys_menu
+        <where>
+            <if test="menuName != null and menuName != '' ">
+                and menuName like CONCAT('%',#{menuName},'%')
+            </if>
+            <if test="status != null and status != '' ">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="getMenuRoutersByUserId" parameterType="Long" resultType="Menu">
+        select
+            m.menuId, m.parentId, m.menuName, m.path, m.component,
+            m.visible, m.status, ifnull(m.perms,'') as perms, m.isFrame, m.menuType,
+            m.icon, m.orderNum, m.createDate
+        from sys_menu m
+            left join sys_role_menu rm on m.menuId = rm.menuId
+            left join sys_user_role ur on rm.roleId = ur.roleId
+            left join sys_role ro on ur.roleId = ro.roleId
+            left join sys_user u on ur.userId = u.userId
+        where u.userId = #{userId}
+            and m.menuType in ('M', 'C')
+            and m.status = '0'
+            AND ro.status = '0'
+        group by m.menuId
+        order by m.parentId, m.orderNum
+    </select>
+
+    <select id="getMenuPermsByUserId" parameterType="Long" resultType="String">
+        select
+            m.perms
+        from sys_menu m
+             left join sys_role_menu rm on m.menuId = rm.menuId
+             left join sys_user_role ur on rm.roleId = ur.roleId
+             left join sys_role r on r.roleId = ur.roleId
+        where m.menuType = 'F'
+            and m.status = '0'
+            and r.status = '0'
+            and ur.userId = #{userId}
+        group by m.perms
+    </select>
+
+    <insert id="add" parameterType="Menu">
+        insert into sys_menu
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="menuName != null and menuName != ''">menuName,</if>
+            <if test="parentId != null">parentId,</if>
+            <if test="orderNum != null and orderNum != ''">orderNum,</if>
+            <if test="path != null and path != ''">path,</if>
+            <if test="component != null and component != ''">component,</if>
+            <if test="isFrame != null and isFrame != ''">isFrame,</if>
+            <if test="menuType != null and menuType != ''">menuType,</if>
+            <if test="visible != null">visible,</if>
+            <if test="status != null">status,</if>
+            <if test="perms !=null">perms,</if>
+            <if test="icon !=null and icon != ''">icon,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            <if test="creator != null and creator != ''" >creator,</if>
+            createDate,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="menuName != null and menuName != ''">#{menuName},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+            <if test="path != null and path != ''">#{path},</if>
+            <if test="component != null and component != ''">#{component},</if>
+            <if test="isFrame != null and isFrame != ''">#{isFrame},</if>
+            <if test="menuType != null and menuType != ''">#{menuType},</if>
+            <if test="visible != null">#{visible},</if>
+            <if test="status != null">#{status},</if>
+            <if test="perms !=null">#{perms},</if>
+            <if test="icon !=null and icon != ''">#{icon},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            <if test="creator != null and creator != ''" >#{creator},</if>
+            sysdate(),
+        </trim>
+    </insert>
+
+    <delete id="remove" parameterType="Long">
+        delete from sys_menu where menuId in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="modify" parameterType="Menu">
+        update sys_menu
+        <set>
+            <if test="menuName != null and menuName != ''">menuName = #{menuName},</if>
+            <if test="parentId != null">parentId = #{parentId},</if>
+            <if test="orderNum != null and orderNum != ''">orderNum = #{orderNum},</if>
+            <if test="path != null and path != ''">path = #{path},</if>
+            <if test="component != null and component != ''">component = #{component},</if>
+            <if test="isFrame != null and isFrame != ''">isFrame = #{isFrame},</if>
+            <if test="menuType != null and menuType != ''">menuType = #{menuType},</if>
+            <if test="visible != null">visible = #{visible},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="perms !=null">perms = #{perms},</if>
+            <if test="icon !=null and icon != ''">icon = #{icon},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+            <if test="modify != null and modify != ''">modify = #{modify},</if>
+            modifyDate = sysdate()
+        </set>
+        where menuId = #{menuId}
+    </update>
+
+</mapper>

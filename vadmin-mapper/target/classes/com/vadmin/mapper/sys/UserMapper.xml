@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vadmin.mapper.sys.UserMapper">
+
+    <select id="loadUserByUsername" resultType="User">
+        select * from sys_user where userName=#{username}
+    </select>
+
+    <select id="getUserRolesById" resultType="Role">
+        SELECT r.* FROM sys_role r, sys_user_role ur WHERE r.roleId = ur.roleId and ur.userId = #{userId}
+    </select>
+
+    <select id="queryById" parameterType="long" resultType="User">
+        select * from sys_user where userId = #{userId}
+    </select>
+
+    <select id="queryByList" parameterType="User" resultType="User">
+        select
+          u.*, o.organName
+        from sys_user u
+        left join sys_organ o on u.organId = o.organId
+        <where>
+            <if test="realName != null and realName != '' ">
+                and u.realName like CONCAT('%',#{realName},'%')
+            </if>
+            <if test="status != null and status != '' ">
+                and u.status = #{status}
+            </if>
+        </where>
+        order by u.createDate
+    </select>
+
+    <insert id="add" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
+        insert into sys_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != 0">userId,</if>
+            <if test="organId != null and organId != ''">organId,</if>
+            <if test="username != null and username != ''">username,</if>
+            <if test="password != null and password != ''">password,</if>
+            <if test="realName != null and realName != ''">realName,</if>
+            <if test="sex != null and sex != ''">sex,</if>
+            <if test="phoneNum != null and phoneNum != ''">phoneNum,</if>
+            <if test="email != null and email != ''">email,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="creator != null and creator != ''">creator,</if>
+            createDate,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != 0">#{userId},</if>
+            <if test="organId != null and organId != ''">#{organId},</if>
+            <if test="username != null and username != ''">#{username},</if>
+            <if test="password != null and password != ''">#{password},</if>
+            <if test="realName != null and realName != ''">#{realName},</if>
+            <if test="sex != null and sex != ''">#{sex},</if>
+            <if test="phoneNum != null and phoneNum != ''">#{phoneNum},</if>
+            <if test="email != null and email != ''">#{email},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="creator != null and creator != ''">#{creator},</if>
+            sysdate(),
+        </trim>
+    </insert>
+
+    <delete id="remove" parameterType="Long">
+        delete from sys_user where userId in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="modify" parameterType="User">
+        update sys_user
+        <set>
+            <if test="organId != null and organId != ''">organId = #{organId},</if>
+            <if test="username != null and username != ''">username = #{username},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="realName != null and realName != ''">realName = #{realName},</if>
+            <if test="sex != null and sex != ''">sex = #{sex},</if>
+            <if test="phoneNum != null and phoneNum != ''">phoneNum = #{phoneNum},</if>
+            <if test="email != null and email != ''">email = #{email},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="modify != null and modify != ''">modify = #{modify},</if>
+            modifyDate = sysdate()
+        </set>
+        where userId = #{userId}
+    </update>
+
+    <update id="resetUserPwd" parameterType="User">
+        update sys_user set password = #{password} where username = #{userName}
+    </update>
+
+    <select id="getRoleIdsByUserId" parameterType="Long" resultType="Long">
+        select roleId from sys_user_role where userId = #{userId}
+    </select>
+
+    <delete id="removeORolesByUserId" parameterType="Long">
+        delete from sys_user_role where userId = #{userId}
+    </delete>
+
+    <insert id="addUserRoleIds" parameterType="User">
+        insert into sys_user_role(userId, roleId)
+        <foreach collection="roleIds" item="roleId" open="values(" separator="),(" close=")">
+            #{userId}, #{roleId}
+        </foreach>
+    </insert>
+
+</mapper>

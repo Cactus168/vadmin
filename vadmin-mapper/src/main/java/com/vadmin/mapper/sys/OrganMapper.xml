@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vadmin.mapper.sys.OrganMapper">
+
+    <select id="queryById" parameterType="long" resultType="Organ">
+        select * from sys_organ where organId = #{organId}
+    </select>
+
+    <select id="queryByList" parameterType="Organ" resultType="Organ">
+        select * from sys_organ
+        <where>
+            <if test="organName != null and organName != '' ">
+                and organName like CONCAT('%',#{organName},'%')
+            </if>
+            <if test="status != null and status != '' ">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <insert id="add" parameterType="Organ">
+        insert into sys_organ
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null and parentId != ''">parentId,</if>
+            <if test="organNo != null and organNo != ''">organNo,</if>
+            <if test="organName != null and organName != ''">organName,</if>
+            <if test="organContent != null and organContent != ''">organContent,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="creator != null and creator != ''">creator,</if>
+            createDate,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null and parentId != ''">#{parentId},</if>
+            <if test="organNo != null and organNo != ''">#{organNo},</if>
+            <if test="organName != null and organName != ''">#{organName},</if>
+            <if test="organContent != null and organContent != ''">#{organContent},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="creator != null and creator != ''">#{creator},</if>
+            sysdate(),
+        </trim>
+    </insert>
+
+    <delete id="remove" parameterType="Long">
+        delete from sys_organ where organId in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="modify" parameterType="Organ">
+        update sys_organ
+        <set>
+            <if test="parentId != null and parentId != ''">parentId = #{parentId},</if>
+            <if test="organNo != null and organNo != ''">organNo = #{organNo},</if>
+            <if test="organName != null and organName != ''">organName = #{organName},</if>
+            <if test="organContent != null and organContent != ''">organContent = #{organContent},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="modify != null and modify != ''">modify = #{modify},</if>
+            modifyDate = sysdate()
+        </set>
+        where organId = #{organId}
+    </update>
+
+</mapper>

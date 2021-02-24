@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vadmin.mapper.sys.DictMapper">
+
+    <!-- 使用resultMap查询集合对象 -->
+    <resultMap type="Dict" id="dictMap">
+        <id column="dictId" property="dictId"/>
+        <result column="parentId" property="parentId"/>
+        <result column="dictNo" property="dictNo"/>
+        <result column="dictName" property="dictName"/>
+        <result column="dictKey" property="dictKey"/>
+        <result column="dictLabel" property="dictLabel"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="status" property="status"/>
+        <result column="remark" property="remark"/>
+        <collection property="dictDatas" select="com.vadmin.mapper.sys.DictMapper.getDictDatasById" column="dictId"></collection>
+    </resultMap>
+
+    <select id="getDictDatasById" parameterType="long" resultType="Dict">
+        select * from sys_dict where parentId = #{dictId} order by orderNum
+    </select>
+
+    <select id="queryById" parameterType="long" resultType="Dict">
+        select * from sys_dict where dictId = #{dictId}
+    </select>
+
+    <select id="queryByList" parameterType="Dict" resultMap="dictMap">
+        select * from sys_dict where parentId = 0
+        <if test="dictName != null and dictName != '' ">
+            and dictName like CONCAT('%',#{dictName},'%')
+        </if>
+        <if test="dictNo != null and dictNo != '' ">
+            and dictNo = #{dictNo}
+        </if>
+        <if test="status != null and status != '' ">
+            and status = #{status}
+        </if>
+    </select>
+
+    <insert id="add" parameterType="Dict">
+        insert into sys_dict
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null and parentId != ''">parentId,</if>
+            <if test="dictNo != null and dictNo != ''">dictNo,</if>
+            <if test="dictName != null and dictName != ''">dictName,</if>
+            <if test="dictKey != null and dictKey != ''">dictKey,</if>
+            <if test="dictLabel != null and dictLabel != ''">dictLabel,</if>
+            <if test="orderNum != null and orderNum != ''">orderNum,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            <if test="creator != null and creator != ''">creator,</if>
+            createDate,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null and parentId != ''">#{parentId},</if>
+            <if test="dictNo != null and dictNo != ''">#{dictNo},</if>
+            <if test="dictName != null and dictName != ''">#{dictName},</if>
+            <if test="dictKey != null and dictKey != ''">#{dictKey},</if>
+            <if test="dictLabel != null and dictLabel != ''">#{dictLabel},</if>
+            <if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            <if test="creator != null and creator != ''">#{creator},</if>
+            sysdate(),
+        </trim>
+    </insert>
+
+    <delete id="remove" parameterType="Long">
+        delete from sys_dict where dictId in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="modify" parameterType="Dict">
+        update sys_dict
+        <set>
+            <if test="parentId != null and parentId != ''">parentId = #{parentId},</if>
+            <if test="dictNo != null and dictNo != ''">dictNo = #{dictNo},</if>
+            <if test="dictName != null and dictName != ''">dictName = #{dictName},</if>
+            <if test="dictKey != null and dictKey != ''">dictKey = #{dictKey},</if>
+            <if test="dictLabel != null and dictLabel != ''">dictLabel = #{dictLabel},</if>
+            <if test="orderNum != null and orderNum != ''">orderNum = #{orderNum},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+            <if test="modify != null and modify != ''">modify = #{modify},</if>
+            modifyDate = sysdate()
+        </set>
+        where dictId = #{dictId}
+    </update>
+
+</mapper>

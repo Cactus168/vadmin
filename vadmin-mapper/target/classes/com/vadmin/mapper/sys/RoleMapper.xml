@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vadmin.mapper.sys.RoleMapper">
+
+    <select id="queryById" parameterType="long" resultType="Role">
+        select * from sys_role where roleId = #{roleId}
+    </select>
+
+    <select id="queryByList" parameterType="Role" resultType="Role">
+        select * from sys_role
+        <where>
+            <if test="roleName != null and roleName != '' ">
+                and roleName like CONCAT('%',#{roleName},'%')
+            </if>
+            <if test="status != null and status != '' ">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <insert id="add" parameterType="Role">
+        insert into sys_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleName != null and roleName != ''">roleName,</if>
+            <if test="roleCode != null and roleCode != ''">roleCode,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            <if test="creator != null and creator != ''">creator,</if>
+            createDate,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleName != null and roleName != ''">#{roleName},</if>
+            <if test="roleCode != null and roleCode != ''">#{roleCode},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            <if test="creator != null and creator != ''">#{creator},</if>
+            sysdate(),
+        </trim>
+    </insert>
+
+    <delete id="remove" parameterType="Long">
+        delete from sys_role where roleId in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="modify" parameterType="Role">
+        update sys_role
+        <set>
+            <if test="roleName != null and roleName != ''">roleName = #{roleName},</if>
+            <if test="roleCode != null and roleCode != ''">roleCode = #{roleCode},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+            <if test="modify != null and modify != ''">modify = #{modify},</if>
+            modifyDate = sysdate()
+        </set>
+        where roleId = #{roleId}
+    </update>
+
+    <select id="getMenuIdsByRoleId" parameterType="Long" resultType="Long">
+        select m.menuId
+        from sys_menu m left join sys_role_menu rm on m.menuId = rm.menuId
+        where rm.roleId = #{roleId}
+          and m.menuId not in (select m.parentId from sys_menu m inner join sys_role_menu rm on m.menuId = rm.menuId and rm.roleId = #{roleId})
+        order by m.parentId, m.orderNum
+    </select>
+
+    <delete id="removeMenusByRoleId" parameterType="Long">
+        delete from sys_role_menu where roleId = #{roleId}
+    </delete>
+
+    <insert id="addRoleMenuIds" parameterType="Role">
+        insert into sys_role_menu(roleId, menuId)
+        <foreach collection="menuIds" item="menuId" open="values(" separator="),(" close=")">
+            #{roleId}, #{menuId}
+        </foreach>
+    </insert>
+
+    <select id="getOrganIdsByRoleId" parameterType="Long" resultType="Long">
+        select o.organId
+        from sys_organ o left join sys_role_organ ro on o.organId = ro.organId
+        where ro.roleId = #{roleId}
+        and o.organId not in (select oo.parentId from sys_organ oo inner join sys_role_organ roo on oo.organId = roo.organId and roo.roleId = #{roleId})
+        order by o.parentId
+    </select>
+
+    <delete id="removeOrgansByRoleId" parameterType="Long">
+        delete from sys_role_organ where roleId = #{roleId}
+    </delete>
+
+    <insert id="addRoleOrganIds" parameterType="Role">
+        insert into sys_role_organ(roleId, organId)
+        <foreach collection="organIds" item="organId" open="values(" separator="),(" close=")">
+            #{roleId}, #{organId}
+        </foreach>
+    </insert>
+
+</mapper>

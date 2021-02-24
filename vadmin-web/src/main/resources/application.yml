@@ -1,0 +1,36 @@
+spring:
+  # 环境 dev|test|prod
+  profiles:
+    active: dev
+  application:
+    name: v-admin
+#mybatis
+mybatis:
+  type-aliases-package: com.vadmin.model
+# token配置
+token:
+    # 令牌自定义标识
+    header: Authorization
+    # 令牌密钥
+    secret: abcdefghijklmnopqrstuvwxyz
+    # 令牌有效期（默认30分钟）
+    expireTime: 30
+# PageHelper分页插件
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+server:
+  port: 8088
+
+vadmin:
+  initPassword: 112233
+
+# Swagger配置
+swagger:
+  # 是否开启swagger
+  enabled: true
+  # 请求前缀
+  pathMapping: /dev-api
+

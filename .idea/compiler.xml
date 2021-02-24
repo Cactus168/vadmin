@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="vadmin-common" />
+        <module name="vadmin-mapper" />
+        <module name="vadmin-model" />
+        <module name="vadmin-service" />
+        <module name="vadmin-web" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="vadmin" target="1.8" />
+      <module name="vadmin-common" target="1.8" />
+      <module name="vadmin-mapper" target="1.8" />
+      <module name="vadmin-model" target="1.8" />
+      <module name="vadmin-service" target="1.8" />
+      <module name="vadmin-web" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
