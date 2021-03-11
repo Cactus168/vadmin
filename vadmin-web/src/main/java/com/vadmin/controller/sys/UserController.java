@@ -11,6 +11,9 @@ import com.vadmin.service.TokenService;
 import com.vadmin.service.base.BaseService;
 import com.vadmin.service.sys.UserService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +28,7 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("sys/user")
 @Log(moduleName = "用户管理")
-//@Api(tags = {"用户操作接口"}, description = "userController")
+@Api(tags = {"用户操作接口"}, description = "userController")
 public class UserController extends BaseController<User, Long> {
 
     @Value("${vadmin.initPassword}")
@@ -57,6 +60,7 @@ public class UserController extends BaseController<User, Long> {
      * @return Model
      */
     @GetMapping("/pw")
+    @ApiOperation(value = "获取初始密码", notes = "获取初始密码")
     public Rs getPw(){
         return Rs.success("",initPassword);
     }
@@ -68,6 +72,7 @@ public class UserController extends BaseController<User, Long> {
      * @return com.vadmin.model.Rs
      */
     @GetMapping("/getUserInfo")
+    @ApiOperation(value = "获取当前用户相关信息", notes = "获取当前用户相关信息")
     public Rs getUserInfo(){
         LoginUser loginUser = getLoginUser();
         Rs rs = Rs.success(loginUser.getUser());
@@ -86,6 +91,11 @@ public class UserController extends BaseController<User, Long> {
      */
     @Log(operateType= "修改密码")
     @PutMapping("/updatePwd")
+    @ApiOperation(value = "修改密码", notes = "修改密码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "oldPassword", value = "原始密码", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "newPassword", value = "新密码", required = true, dataType = "String")
+    })
     public Rs updatePwd(String oldPassword, String newPassword) {
         LoginUser loginUser = getLoginUser();
         String userName = loginUser.getUsername();

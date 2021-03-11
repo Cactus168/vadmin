@@ -3,6 +3,7 @@ package com.vadmin.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vadmin.common.utils.StringUtils;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -14,40 +15,51 @@ import java.util.Map;
 public class BaseModel implements Serializable {
 
     /** 当前记录起始索引 */
+    @ApiModelProperty(value = "当前记录起始索引")
     private Integer pageNum;
 
     /** 每页显示记录数 */
+    @ApiModelProperty(value = "每页显示记录数")
     private Integer pageSize;
 
     /** 排序列 */
+    @ApiModelProperty(value = "排序列")
     private String sort;
 
     /** 排序的方向 "desc" 或者 "asc". */
+    @ApiModelProperty(value = "排序的方向 desc 或者 asc")
     private String isAsc;
 
     /** 创建者 */
+    @ApiModelProperty(value = "创建者")
     private String creator;
 
     /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "创建时间")
     private Date createDate;
 
     /** 更新者 */
+    @ApiModelProperty(value = "更新者")
     private String modify;
 
     /** 更新时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "更新时间")
     private Date modifyDate;
 
     /** 开始时间 */
     @JsonIgnore
+    @ApiModelProperty(value = "开始时间")
     private String beginTime;
 
     /** 结束时间 */
     @JsonIgnore
+    @ApiModelProperty(value = "结束时间")
     private String endTime;
 
     /** 请求参数 */
+    @ApiModelProperty(value = "请求参数")
     private Map<String, Object> params;
 
     public String getCreator() {

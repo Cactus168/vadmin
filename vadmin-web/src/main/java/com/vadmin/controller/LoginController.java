@@ -8,6 +8,7 @@ import com.vadmin.router.Router;
 import com.vadmin.service.base.BaseService;
 import com.vadmin.service.sys.MenuService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -20,6 +21,7 @@ import java.util.List;
  * @date: 2020/8/11 17:54
  */
 @RestController
+@RequestMapping("/login")
 public class LoginController extends BaseController<BaseModel, Long> {
 
     @Resource

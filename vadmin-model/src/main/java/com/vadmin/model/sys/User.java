@@ -2,34 +2,48 @@ package com.vadmin.model.sys;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vadmin.model.BaseModel;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.List;
-
+@ApiModel(value = "用户信息")
 public class User extends BaseModel {
 
+    @ApiModelProperty(value = "用户id")
     private long userId;
 
+    @ApiModelProperty(value = "组织机构id")
     private long organId;
 
+    @ApiModelProperty(value = "组织机构名称")
     private String organName;
 
+    @ApiModelProperty(value = "用户帐号")
     private String username;
 
+    @ApiModelProperty(value = "密码")
     private String password;
 
+    @ApiModelProperty(value = "真实名称")
     private String realName;
 
+    @ApiModelProperty(value = "性别")
     private String sex;
 
+    @ApiModelProperty(value = "电话号码")
     private String phoneNum;
 
+    @ApiModelProperty(value = "邮箱")
     private String email;
 
+    @ApiModelProperty(value = "地址")
     private String address;
 
+    @ApiModelProperty(value = "状态")
     private String status;
 
+    @ApiModelProperty(value = "角色")
     private List<Long> roleIds;
 
     public long getUserId() {

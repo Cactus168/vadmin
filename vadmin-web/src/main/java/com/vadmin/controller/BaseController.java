@@ -42,7 +42,7 @@ public abstract class BaseController<Model extends BaseModel,Id extends Serializ
      * @return com.vadmin.model.Rs
      */
     @GetMapping("/")
-//    @ApiOperation("模糊查询数据")
+    @ApiOperation(value = "模糊查询数据", notes = "模糊查询数据")
     public Rs list(Model model){
         this.beforeList(model);
         Rs rs = Rs.success().tableData(this.service().queryByList(model));
@@ -77,7 +77,8 @@ public abstract class BaseController<Model extends BaseModel,Id extends Serializ
      * @return Model
      */
     @GetMapping("/{id}")
-//    @ApiOperation("查询某条数据")
+    @ApiOperation(value = "查询某条数据", notes = "查询某条数据")
+    @ApiImplicitParam(paramType = "path", name = "id", value = "主键ID", required = true, dataType = "Long")
     public Rs queryById(@PathVariable("id") Id id){
         this.beforeQueryById(id);
         Rs rs = Rs.success(this.service().queryById(id));
@@ -115,7 +116,7 @@ public abstract class BaseController<Model extends BaseModel,Id extends Serializ
      */
     @PostMapping("/")
     @Log(operateType = "添加")
-//    @ApiOperation("添加数据")
+    @ApiOperation(value = "添加数据", notes = "添加数据")
     public Rs add(@Validated @RequestBody Model model){
         model.setCreator(getUser().getRealName());
         model.setCreateDate(DateUtils.getNowDate());
@@ -156,7 +157,7 @@ public abstract class BaseController<Model extends BaseModel,Id extends Serializ
      */
     @PutMapping("/")
     @Log(operateType = "修改")
-//    @ApiOperation("修改数据")
+    @ApiOperation(value = "修改数据", notes = "修改数据")
     public Rs modify(@Validated @RequestBody Model model) {
         model.setModify(getUser().getRealName());
         model.setModifyDate(DateUtils.getNowDate());
@@ -197,7 +198,8 @@ public abstract class BaseController<Model extends BaseModel,Id extends Serializ
      */
     @DeleteMapping("/{ids}")
     @Log(operateType = "删除")
-//    @ApiOperation("删除数据")
+    @ApiOperation(value = "删除数据", notes = "删除数据")
+    @ApiImplicitParam(paramType = "path", name = "ids", value = "主键id数组", required = true, dataType = "long", allowMultiple = true)
     public Map<String, Object> remove(@PathVariable Id[] ids) {
         this.beforeRemove(ids);
         Rs rs = Rs.success(this.service().remove(ids));
