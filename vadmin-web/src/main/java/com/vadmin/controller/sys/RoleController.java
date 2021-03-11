@@ -9,6 +9,7 @@ import com.vadmin.model.sys.User;
 import com.vadmin.service.base.BaseService;
 import com.vadmin.service.sys.RoleService;
 import com.vadmin.service.sys.UserService;
+import io.swagger.annotations.Api;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("sys/role")
 @Log(moduleName = "角色管理")
+@Api(value = "角色管理", tags = "角色管理")
 public class RoleController extends BaseController<Role, Long> {
 
     @Resource
